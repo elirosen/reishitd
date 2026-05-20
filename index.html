@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Image</title>
+    <title>בית כנסת ראשית דגנך</title>
     <style>
         * {
             margin: 0;
@@ -49,23 +49,10 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .loading {
-            color: #999;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-        
         .update-info {
             color: #666;
             font-size: 14px;
             margin-top: 30px;
-            text-align: center;
-        }
-        
-        .error {
-            color: #d32f2f;
-            font-size: 14px;
-            margin-top: 20px;
             text-align: center;
         }
         
@@ -84,41 +71,15 @@
 <body>
     <div class="container">
         <h1>בית כנסת ראשית דגנך</h1>
-        <div id="imageContainer"></div>
-        <p class="loading" id="loadingText">Loading image...</p>
-        <p class="update-info">עוד עדכונים בקרוב</p>
+        <img src="image.jpg" alt="זמני תפילה" id="weeklyImage">
+        <p class="update-info">עוד עדכונים בקרוב </p>
     </div>
     
     <script>
-        // SETUP INSTRUCTIONS:
-        // 1. Upload your image to a Dropbox folder
-        // 2. Right-click the image and select "Copy Dropbox link"
-        // 3. Modify the URL: change "?dl=0" at the end to "?dl=1" to force download/display
-        // 4. Replace DROPBOX_URL below with your modified link
-        
-        const DROPBOX_URL = "https://www.dropbox.com/scl/fi/bay04xdu56pdzru7ygcpk/image.jpg?rlkey=y5ft90byu3aitjtoodu5ybd5q&st=8x6yxkfq&dl=1";
-        
-        const container = document.getElementById('imageContainer');
-        const loadingText = document.getElementById('loadingText');
-        
-        // Create image element
-        const img = document.createElement('img');
-        img.alt = 'בית כנסת ראשית דגנך - זמנים';
-        
-        // Handle successful load
-        img.onload = function() {
-            loadingText.style.display = 'none';
-        };
-        
-        // Handle error
-        img.onerror = function() {
-            loadingText.innerHTML = '<span class="error">⚠️ Unable to load image. Check your Dropbox link.</span>';
-            loadingText.style.display = 'block';
-        };
-        
-        // Force fresh image each time (prevents caching issues)
-        img.src = DROPBOX_URL + '&t=' + new Date().getTime();
-        container.appendChild(img);
+        // Optional: Add a cache-busting query parameter to force fresh image load
+        // Remove the comment below if you want to ensure visitors always see the latest image
+        const img = document.getElementById('weeklyImage');
+        img.src = 'image.jpg?' + new Date().getTime();
     </script>
 </body>
 </html>
