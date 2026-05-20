@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Image</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        img {
+            max-width: 100%;
+            max-height: 70vh;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .loading {
+            color: #999;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        .update-info {
+            color: #666;
+            font-size: 14px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .error {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>בית כנסת ראשית דגנך</h1>
+        <div id="imageContainer"></div>
+        <p class="loading" id="loadingText">Loading image...</p>
+        <p class="update-info">עוד עדכונים בקרוב</p>
+    </div>
+    
+    <script>
+        // SETUP INSTRUCTIONS:
+        // 1. Upload your image to a Dropbox folder
+        // 2. Right-click the image and select "Copy Dropbox link"
+        // 3. Modify the URL: change "?dl=0" at the end to "?dl=1" to force download/display
+        // 4. Replace DROPBOX_URL below with your modified link
+        
+        const DROPBOX_URL = "https://www.dropbox.com/scl/fi/bay04xdu56pdzru7ygcpk/image.jpg?rlkey=y5ft90byu3aitjtoodu5ybd5q&dl=1";
+        
+        const container = document.getElementById('imageContainer');
+        const loadingText = document.getElementById('loadingText');
+        
+        // Create image element
+        const img = document.createElement('img');
+        img.alt = 'בית כנסת ראשית דגנך - זמנים';
+        
+        // Handle successful load
+        img.onload = function() {
+            loadingText.style.display = 'none';
+        };
+        
+        // Handle error
+        img.onerror = function() {
+            loadingText.innerHTML = '<span class="error">⚠️ Unable to load image. Check your Dropbox link.</span>';
+            loadingText.style.display = 'block';
+        };
+        
+        // Force fresh image each time (prevents caching issues)
+        img.src = DROPBOX_URL + '&t=' + new Date().getTime();
+        container.appendChild(img);
+    </script>
+</body>
+</html>
