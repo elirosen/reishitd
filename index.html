@@ -71,9 +71,12 @@
 <body>
     <div class="container">
         <h1>בית כנסת ראשית דגנך</h1>
-        <img src="image.jpg" alt="זמני תפילה" id="weeklyImage">
+        <img src="image.png" alt="זמני תפילה" id="weeklyImage">
+        <!-- 
+        uncomment this if you want to show the second image
         <br>
-        <img src="image2.jpeg" alt="זמני תפילה" id="weeklyImage">
+        <img src="image2.jpeg" alt="זמני תפילה" id="weeklyImage"> 
+        -->
         
         <p class="update-info">עוד עדכונים בקרוב </p>
     </div>
@@ -82,7 +85,7 @@
         // Optional: Add a cache-busting query parameter to force fresh image load
         // Remove the comment below if you want to ensure visitors always see the latest image
         const img = document.getElementById('weeklyImage');
-        img.src = 'image.jpg?' + new Date().getTime();
+        img.src = 'image.png?' + new Date().getTime();
     </script>
 </body>
 </html>
