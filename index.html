@@ -71,7 +71,7 @@
 <body>
     <div class="container">
         <h1>בית כנסת ראשית דגנך</h1>
-        <img src="https://www.dropbox.com/scl/fi/f2y4xjcxwjuieisha2hdv/behalotcha-2026.jpg?rlkey=mgg62r9ffh24enm5yaodt84gs&st=qnjo0x5h&dl=1" alt="זמני תפילה" id="weeklyImage">
+        <img src="image.png" alt="זמני תפילה" id="weeklyImage">
         <!-- 
         uncomment this if you want to show the second image
         <br>
@@ -84,7 +84,7 @@
     <script>
         // Add cache-busting to force fresh image load on each page visit
         const img = document.getElementById('weeklyImage');
-        img.src = img.src + '&t=' + new Date().getTime();
+        img.src = img.src + '?t=' + new Date().getTime();
     </script>
 </body>
 </html>

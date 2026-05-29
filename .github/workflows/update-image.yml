@@ -1,0 +1,96 @@
+name: Update Weekly Image
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  update-image:
+    # Only run if issue has label "weekly-image"
+    if: contains(github.event.issue.labels.*.name, 'weekly-image')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
+      - name: Download and process image from issue
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Get issue details to find image attachments
+          ISSUE_BODY=$(gh api repos/$REPO/issues/$ISSUE_NUMBER --jq '.body')
+
+          # Extract image URLs from issue body (GitHub uploads have this format)
+          IMAGE_URLS=$(echo "$ISSUE_BODY" | grep -oP 'https://github\.com/user-attachments/assets/[a-zA-Z0-9_-]+' || true)
+
+          if [ -z "$IMAGE_URLS" ]; then
+            echo "No images found in issue body, checking comments..."
+            # Get first comment (the issue itself)
+            IMAGE_URLS=$(gh api repos/$REPO/issues/$ISSUE_NUMBER --jq '.body' | grep -oP '!\[.*?\]\(\Khttps://[^)]+' || true)
+          fi
+
+          if [ -z "$IMAGE_URLS" ]; then
+            echo "Error: No images found in issue"
+            exit 1
+          fi
+
+          # Take the first image URL found
+          FIRST_IMAGE=$(echo "$IMAGE_URLS" | head -n 1)
+          echo "Found image: $FIRST_IMAGE"
+
+          # Download the image
+          curl -L -o temp_image "$FIRST_IMAGE"
+
+          # Detect file type and convert to PNG
+          FILE_TYPE=$(file -b --mime-type temp_image)
+          echo "Detected file type: $FILE_TYPE"
+
+          # Convert to PNG using ImageMagick
+          convert temp_image -resize 1920x1080\> -strip image.png
+
+          # Clean up temp file
+          rm temp_image
+
+          echo "Image converted and saved as image.png"
+        shell: bash
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add image.png
+          git commit -m "Update weekly image from issue #${{ github.event.issue.number }}"
+          git push
+
+      - name: Close issue with success message
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api repos/$REPO/issues/$ISSUE_NUMBER -X PATCH \
+            -f state=closed \
+            -f body="✅ Image updated successfully! The new image has been committed to the repository and will appear on the website shortly."
+        shell: bash
+
+      - name: Comment on failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api repos/$REPO/issues/$ISSUE_NUMBER/comments -X POST \
+            -f body="❌ Failed to update image. Please check that an image was attached and try again."
+        shell: bash
