@@ -82,10 +82,9 @@
     </div>
     
     <script>
-        // Optional: Add a cache-busting query parameter to force fresh image load
-        // Remove the comment below if you want to ensure visitors always see the latest image
-        //const img = document.getElementById('weeklyImage');
-        //img.src = 'image.png?' + new Date().getTime();
+        // Add cache-busting to force fresh image load on each page visit
+        const img = document.getElementById('weeklyImage');
+        img.src = img.src + '&t=' + new Date().getTime();
     </script>
 </body>
 </html>
